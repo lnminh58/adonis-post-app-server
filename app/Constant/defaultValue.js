@@ -3,13 +3,19 @@ const MEDIA_TYPE = {
   image: "IMAGE",
 }
 
-const SUPPORT_EMAIL = 'lnminh58@gmail.com' 
+const SUPPORT_EMAIL = 'postapp@pa.com' 
 const EMAIL_SUBJECT = {
-  accountActivation: 'Please verify your Post App account'
+  accountActivation: 'Please verify your Post App account',
+  resetPassword: 'Reset Password Code',
 } 
+
+const ACCOUNT_CODE_TYPE = {
+  passwordReset: 'password_reset_code'
+}
 
 module.exports = {
   MEDIA_TYPE,
   SUPPORT_EMAIL,
-  EMAIL_SUBJECT
+  EMAIL_SUBJECT,
+  ACCOUNT_CODE_TYPE
 };

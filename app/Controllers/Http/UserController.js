@@ -4,15 +4,19 @@ const Env = use("Env");
 const Mail = use("Mail");
 const Helpers = use("Helpers");
 const { validateAll } = use("Validator");
+const Hash = use("Hash");
 
 const User = use("App/Models/User");
 const Profile = use("App/Models/Profile");
 const Token = use("App/Models/Token");
+const AccountCode = use("App/Models/AccountCode");
 
 const { Timing, Storage, Generator } = use("App/Utils");
-const { SUPPORT_EMAIL, EMAIL_SUBJECT } = use("App/Constant/defaultValue");
+const { SUPPORT_EMAIL, EMAIL_SUBJECT, ACCOUNT_CODE_TYPE } = use(
+  "App/Constant/defaultValue"
+);
 
-const { get } = require("lodash");
+const { get, first } = require("lodash");
 const snakeCaseKeys = require("snakecase-keys");
 
 class UserController {
@@ -108,6 +112,7 @@ class UserController {
       response.status(status).send(error);
     }
   }
+
   async activeAccount({ auth, request, response }) {
     try {
       const data = request.only(["activationToken"]);
@@ -117,6 +122,90 @@ class UserController {
 
       await user.save();
       response.ok({ message: "account has been activated!" });
+    } catch (error) {
+      console.log("error", error);
+      const { status } = error;
+      response.status(status).send(error);
+    }
+  }
+
+  async sendPasswordResetCode({ auth, request, response }) {
+    try {
+      const data = request.only(["email"]);
+
+      const rules = {
+        email: "required|email"
+      };
+
+      const validation = await validateAll(data, rules);
+
+      if (validation.fails()) {
+        console.log(validation.messages());
+        return response.badRequest(validation.messages());
+      }
+
+      const { email } = data;
+      const user = await User.findByOrFail({ email });
+
+      await user
+        .accountCodes()
+        .where({
+          is_revoked: false,
+          type: ACCOUNT_CODE_TYPE.passwordReset
+        })
+        .update({ is_revoked: true });
+
+      const randomCode = Generator.generateRandomCode();
+
+      await Mail.send(
+        "emails.reset-password",
+        {
+          username: user.username,
+          code: randomCode
+        },
+        message => {
+          message
+            .from(SUPPORT_EMAIL)
+            .to(email)
+            .subject(EMAIL_SUBJECT.resetPassword);
+        }
+      );
+      const hashed_code = await Hash.make(randomCode);
+
+      const isValidCode = await Hash.verify(randomCode, hashed_code);
+
+      await user.accountCodes().create({
+        hashed_code,
+        type: ACCOUNT_CODE_TYPE.passwordReset
+      });
+
+      response.ok({ message: "email has been sent", userId: user.id });
+    } catch (error) {
+      console.log("error", error);
+      const { status } = error;
+      response.status(status).send(error);
+    }
+  }
+
+  async verifyResetPasswordCode({ auth, request, response }) {
+    try {
+      const data = request.only(["code", "userId"]);
+      const accountCodes = await AccountCode.query()
+        .where({
+          user_id: data.userId,
+          is_revoked: false,
+          type: ACCOUNT_CODE_TYPE.passwordReset
+        })
+        .fetch();
+
+      const accountCode = first(accountCodes.rows);
+
+      const isValidCode = await Hash.verify(data.code, accountCode.hashed_code);
+
+      if(!isValidCode) {
+        return response.badRequest({ message: 'Invalid code!'})
+      }
+      console.log(isValidCode);
     } catch (error) {
       console.log("error", error);
       const { status } = error;
@@ -170,7 +259,9 @@ class UserController {
       const tokenRes = await auth.attempt(email, password);
 
       if (!user.is_activated) {
-        return response.forbidden({ message: "Account hasn't been activated yet!" });
+        return response.forbidden({
+          message: "Account hasn't been activated yet!"
+        });
       }
       //  add fake delay
       await Timing.delay(1000);

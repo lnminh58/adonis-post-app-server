@@ -27,6 +27,14 @@ Route.group(() => {
     "users/resend-account-activation-email",
     "UserController.resendAccountActivationEmail"
   );
+  Route.post(
+    "users/send-password-reset-code",
+    "UserController.sendPasswordResetCode"
+  );
+  Route.post(
+    "users/verify-reset-password-code",
+    "UserController.verifyResetPasswordCode"
+  );
   Route.post("users/active-account", "UserController.activeAccount");
   Route.get("users/test-mail", "UserController.testMail");
   Route.post("users/sign-in", "UserController.signIn");
