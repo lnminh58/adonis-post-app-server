@@ -9,7 +9,7 @@
     "test": "node ace test",
     "serve": "adonis serve ",
     "serve:debug": "adonis serve --debug",
-    "start-schedule": "node ace run:scheduler",
+    "start-schedule": "node ace run:scheduler"
   },
   "keywords": [
     "adonisjs",
