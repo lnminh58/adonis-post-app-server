@@ -11,7 +11,7 @@ const moment = require("moment");
 
 class CleanExpireCode extends Task {
   static get schedule() {
-    return "0 */1 * * * *";
+    return "*/5 * * * * *";
   }
 
   async handle() {
@@ -25,7 +25,7 @@ class CleanExpireCode extends Task {
   async cleanExpirePasswordResetCode() {
     try {
       const expireTime = moment()
-        .subtract(1, "h")
+        .subtract(20, "s")
         .toDate();
       await AccountCode.query()
         .where("created_at", "<", expireTime)
