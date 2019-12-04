@@ -8,7 +8,8 @@
     "start": "node server.js",
     "test": "node ace test",
     "serve": "adonis serve ",
-    "serve:debug": "adonis serve --debug"
+    "serve:debug": "adonis serve --debug",
+    "start-schedule": "node ace run:scheduler"
   },
   "keywords": [
     "adonisjs",
@@ -31,6 +32,7 @@
     "@adonisjs/session": "^1.0.27",
     "@adonisjs/shield": "^1.0.8",
     "@adonisjs/validator": "^5.0.6",
+    "adonis-scheduler": "^3.0.2",
     "fs": "^0.0.1-security",
     "ipfs-http-client": "^39.0.2",
     "lodash": "^4.17.15",

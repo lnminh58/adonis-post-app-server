@@ -8,7 +8,6 @@ const Hash = use("Hash");
 
 const User = use("App/Models/User");
 const Profile = use("App/Models/Profile");
-const Token = use("App/Models/Token");
 const AccountCode = use("App/Models/AccountCode");
 
 const { Timing, Storage, Generator } = use("App/Utils");
@@ -187,7 +186,7 @@ class UserController {
     }
   }
 
-  async verifyResetPasswordCode({ auth, request, response }) {
+  async verifyPasswordResetCode({ auth, request, response }) {
     try {
       const data = request.only(["code", "userId"]);
       const accountCodes = await AccountCode.query()
@@ -202,10 +201,48 @@ class UserController {
 
       const isValidCode = await Hash.verify(data.code, accountCode.hashed_code);
 
-      if(!isValidCode) {
-        return response.badRequest({ message: 'Invalid code!'})
+      if (!isValidCode) {
+        return response.badRequest({ message: "Invalid code!" });
       }
-      console.log(isValidCode);
+
+      response.ok({ isValidCode });
+    } catch (error) {
+      console.log("error", error);
+      const { status } = error;
+      response.status(status).send(error);
+    }
+  }
+
+  async resetPassword({ auth, request, response }) {
+    try {
+      const data = request.only(["password", "userId"]);
+
+      const { userId, password } = data;
+
+      const user = await User.find(userId);
+
+      const rules = {
+        password: "required|min:6"
+      };
+
+      const validation = await validateAll({ password }, rules);
+
+      if (validation.fails()) {
+        return response.badRequest(validation.messages());
+      }
+
+      user.password = password;
+      await user.save();
+
+      await user
+        .accountCodes()
+        .where({
+          is_revoked: false,
+          type: ACCOUNT_CODE_TYPE.passwordReset
+        })
+        .update({ is_revoked: true });
+
+      response.ok({ message: "Password has been updated!" });
     } catch (error) {
       console.log("error", error);
       const { status } = error;

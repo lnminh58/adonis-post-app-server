@@ -15,7 +15,7 @@
 
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use("Route");
-const Helpers = use('Helpers');
+const Helpers = use("Helpers");
 
 Route.on("/account-activation/:token").render("account-activation");
 
@@ -32,9 +32,10 @@ Route.group(() => {
     "UserController.sendPasswordResetCode"
   );
   Route.post(
-    "users/verify-reset-password-code",
-    "UserController.verifyResetPasswordCode"
+    "users/verify-password-reset-code",
+    "UserController.verifyPasswordResetCode"
   );
+  Route.post("users/reset-password", "UserController.resetPassword");
   Route.post("users/active-account", "UserController.activeAccount");
   Route.get("users/test-mail", "UserController.testMail");
   Route.post("users/sign-in", "UserController.signIn");
