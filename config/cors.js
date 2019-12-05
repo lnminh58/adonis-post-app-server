@@ -1,4 +1,4 @@
-'use strict'
+"use strict";
 
 module.exports = {
   /*
@@ -16,7 +16,12 @@ module.exports = {
   | Function - Receives the current origin and should return one of the above values.
   |
   */
-  origin: ['http://localhost:8080', 'https://localhost:8080', 'http://127.0.0.1:3333'],
+  origin: [
+    "http://localhost:8080",
+    "https://localhost:8080",
+    "http://127.0.0.1:3333",
+    "http://adonis-vuejs-post.herokuapp.com"
+  ],
 
   /*
   |--------------------------------------------------------------------------
@@ -29,7 +34,7 @@ module.exports = {
   | Array - An array of allowed methods
   |
   */
-  methods: ['GET', 'PUT', 'PATCH', 'POST', 'DELETE'],
+  methods: ["GET", "PUT", "PATCH", "POST", "DELETE"],
 
   /*
   |--------------------------------------------------------------------------
@@ -84,4 +89,4 @@ module.exports = {
   |
   */
   maxAge: 90
-}
+};
