@@ -19,3 +19,4 @@ module.exports = {
   EMAIL_SUBJECT,
   ACCOUNT_CODE_TYPE
 };
+
