@@ -57,6 +57,7 @@ Route.group(() => {
   Route.get("categories", "PostController.getCategories");
   Route.post("post/save", "PostController.savePost");
   Route.get("post/get", "PostController.getPosts");
+  Route.get("post/get-post-detail/:id", "PostController.getPostDetail");
   Route.delete("post/delete", "PostController.deletePost");
   Route.patch("post/open-post-linking", "PostController.openPostLinking");
 })

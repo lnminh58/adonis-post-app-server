@@ -143,12 +143,10 @@ class PostController {
       let data = request.only(["userId", "limit", "page"]);
       data = snakeCaseKeys(data);
       const { user_id, limit, page } = data;
-
       const posts = await Post.query()
         .with("user.profile")
         .with("category", builder => builder.select("id", "name"))
         .with("hashtags", builder => builder.select("id", "name as tag"))
-        .with("likes", builder => builder.select("id", "name as tag"))
         .with("media")
         .withCount("likeds as total_likeds")
         .where({ is_active: true })
@@ -230,6 +228,33 @@ class PostController {
 
       const posts = await postQuery.paginate(page, limit);
       response.ok(posts.toJSON());
+    } catch (error) {
+      console.log("error", error);
+      const { status } = error;
+      response.status(status).send(error);
+    }
+  }
+
+  async getPostDetail({ auth, request, response, params }) {
+    try {
+      const id = params.id;
+  
+      const user = await auth.getUser();
+  
+      const posts = await Post.query()
+        .with("user.profile")
+        .with("category", builder => builder.select("id", "name"))
+        .with("hashtags", builder => builder.select("id", "name as tag"))
+        .with("media")
+        .withCount("likeds as total_likeds")
+        .withCount("likeds as is_user_liked", builder =>
+          builder.where({ user_id: user.id })
+        )
+        .where({ is_active: true })
+        .where({ id })
+        .fetch();
+  
+      response.ok(first(posts.toJSON()))
     } catch (error) {
       console.log("error", error);
       const { status } = error;
