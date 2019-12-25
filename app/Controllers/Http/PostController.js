@@ -253,7 +253,6 @@ class PostController {
         .where({ is_active: true })
         .where({ id })
         .fetch();
-  
       response.ok(first(posts.toJSON()))
     } catch (error) {
       console.log("error", error);
