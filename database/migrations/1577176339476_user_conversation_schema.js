@@ -17,7 +17,6 @@ class UserConversationSchema extends Schema {
         .unsigned()
         .references("id")
         .inTable("conversations");
-      table.timestamps();
     });
   }
 

@@ -64,6 +64,15 @@ class User extends Model {
     return this.belongsToMany('App/Models/Post')
       .pivotTable('likes');
   }
+
+  conversations() {
+    return this.belongsToMany('App/Models/Conversation')
+    .pivotTable('user_conversations')
+  }
+
+  messages() {
+    return this.hasMany('App/Models/Message')
+  }
 }
 
 module.exports = User;

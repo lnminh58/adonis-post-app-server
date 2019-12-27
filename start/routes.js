@@ -60,6 +60,7 @@ Route.group(() => {
   Route.get("post/get-post-detail/:id", "PostController.getPostDetail");
   Route.delete("post/delete", "PostController.deletePost");
   Route.patch("post/open-post-linking", "PostController.openPostLinking");
+  Route.get("message/:conversation", "ChatController.getMessageByConversation");
 })
   .prefix("api/v1")
   .middleware(["auth"]);

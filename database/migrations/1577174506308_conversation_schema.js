@@ -8,6 +8,7 @@ class ConversationSchema extends Schema {
     this.create('conversations', (table) => {
       table.increments()
       table.string('name', 200)
+      table.string('topic', 50)
       table.boolean('is_private')
       table.timestamps()
     })
