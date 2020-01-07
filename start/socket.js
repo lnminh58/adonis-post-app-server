@@ -15,5 +15,8 @@
 
 const Ws = use("Ws");
 
-Ws.channel('chat:*', 'ChatController')
+Ws.channel("chat:*", "ChatController");
 // .middleware(["auth"]);
+Ws.channel("conversation:*", ({ socket }) => {
+  console.log("a new subscription for news topic", socket);
+});

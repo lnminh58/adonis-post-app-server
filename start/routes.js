@@ -61,6 +61,9 @@ Route.group(() => {
   Route.delete("post/delete", "PostController.deletePost");
   Route.patch("post/open-post-linking", "PostController.openPostLinking");
   Route.get("message/:conversation", "ChatController.getMessageByConversation");
+  Route.get("users/conversation", "ChatController.getUserConversation");
+  Route.get("users/find-user-by-name", "UserController.findUserByName");
+  Route.get("users/find-conversation-by-topic", "ChatController.findConversationByTopic");
 })
   .prefix("api/v1")
   .middleware(["auth"]);

@@ -422,6 +422,28 @@ class UserController {
       response.status(status).send(error);
     }
   }
+
+  async findUserByName({ request, response, auth }) {
+    try {
+      const user = await auth.getUser();
+      const data = request.only(["q"]);
+      const { q } = data;
+
+      const users = await User.query()
+        .select(["id", "username", "email"])
+        .where("username", "ILIKE", `%${q}%`)
+        .whereNot("id", user.id)
+        .with("profile")
+        .limit(10)
+        .fetch();
+      console.log(users.toJSON());
+      response.ok(users.toJSON());
+    } catch (error) {
+      console.log("error", error);
+      const { status } = error;
+      response.status(status).send(error);
+    }
+  }
 }
 
 module.exports = UserController;

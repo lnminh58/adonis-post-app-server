@@ -22,7 +22,7 @@ class PostSchema extends Schema {
         .unsigned()
         .references('id')
         .inTable('users');
-      table.timestamps();
+      table.timestamps(true);
     });
   }
 
