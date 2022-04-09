@@ -37,7 +37,7 @@
     "fs": "^0.0.1-security",
     "ipfs-http-client": "^39.0.2",
     "lodash": "^4.17.15",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "mysql": "^2.17.1",
     "pg": "^7.14.0",
     "snakecase-keys": "^3.1.0"
